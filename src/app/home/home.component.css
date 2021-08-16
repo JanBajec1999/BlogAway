@@ -1,0 +1,13 @@
+mat-card{
+  margin: 3%;
+}
+
+.card-img{
+  width: 100%;
+}
+
+mat-card-subtitle{
+  margin: 10px;
+  height: 100%;
+  overflow: fragments;
+}

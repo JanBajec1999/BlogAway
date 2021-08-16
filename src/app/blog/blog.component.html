@@ -1,0 +1,8 @@
+<mat-card *ngIf="blog != undefined">
+  <mat-card-title>{{blog.title}}</mat-card-title>
+  <mat-card-content>
+    <img mat-card-image src="data:image/png;base64,{{blog.img}}" alt="">
+    <mat-card-subtitle>{{blog.content}}</mat-card-subtitle>
+    <mat-card-subtitle style="text-align: end; margin-top: 20px">{{blog.date}}</mat-card-subtitle>
+  </mat-card-content>
+</mat-card>

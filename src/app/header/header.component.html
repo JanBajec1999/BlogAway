@@ -1,0 +1,10 @@
+<mat-toolbar color="primary">
+  <button mat-icon-button (click)="onHome()">
+    <mat-icon>home</mat-icon>
+  </button>
+  <span class="header-title">BLOG AWAY</span>
+  <span *ngIf="username != undefined">{{username}}</span>
+  <button mat-icon-button (click)="onProfile()">
+    <mat-icon>person</mat-icon>
+  </button>
+</mat-toolbar>

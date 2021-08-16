@@ -1,0 +1,45 @@
+{
+  "paths": [
+    {
+      "name": "/blogs",
+      "lambdaFunction": "blogaway83882c9a",
+      "privacy": {
+        "protected": true,
+        "auth": [
+          "/POST",
+          "/GET",
+          "/PUT",
+          "/PATCH",
+          "/DELETE"
+        ],
+        "unauth": [
+          "/GET"
+        ]
+      },
+      "policyResourceName": "/blogs"
+    }
+  ],
+  "resourceName": "api719655d7",
+  "apiName": "api719655d7",
+  "functionArns": [
+    {
+      "lambdaFunction": "blogaway83882c9a"
+    }
+  ],
+  "privacy": {
+    "auth": 1,
+    "unauth": 1,
+    "authRoleName": "amplify-blogaway-dev-161419-authRole",
+    "unAuthRoleName": "amplify-blogaway-dev-161419-unauthRole"
+  },
+  "dependsOn": [
+    {
+      "category": "function",
+      "resourceName": "blogaway83882c9a",
+      "attributes": [
+        "Name",
+        "Arn"
+      ]
+    }
+  ]
+}

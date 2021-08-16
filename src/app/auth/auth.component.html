@@ -1,0 +1,11 @@
+<mat-card>
+  <app-login *ngIf="loginBool"></app-login>
+  <app-register *ngIf="!loginBool"></app-register>
+  <div *ngIf="loginBool">
+    <button mat-button (click)="loginSwitch()">Need to sign in?</button>
+  </div>
+  <div *ngIf="!loginBool">
+    <button mat-button (click)="loginSwitch()">Already have an account?</button>
+  </div>
+  <button mat-button (click)="continueAsGuest()">Continue as guest</button>
+</mat-card>

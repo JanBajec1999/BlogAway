@@ -1,0 +1,16 @@
+@media screen and (max-width: 768px) {
+  mat-card{
+    margin: 20% 10%;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  mat-card{
+    margin: 25% 25%;
+  }
+}
+
+.mat-button{
+  width: 100%;
+}
+
