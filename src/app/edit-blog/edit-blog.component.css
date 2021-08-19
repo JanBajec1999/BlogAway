@@ -23,10 +23,20 @@
     width: 80%;
   }
 
-  mat-card-subtitle{
-    margin: 10px;
-    height: 100%;
-    overflow: fragments;
+  .newBlogForm{
+    margin: 20px 10%;
+    width: 80%;
+  }
+
+  .inputTextArea{
+    width: 100%;
+  }
+
+  .errorMSG{
+    margin: 20px 10%;
+    width: 80%;
+    text-align: center;
+    color: red;
   }
 }
 
@@ -55,9 +65,19 @@
     width: 60%;
   }
 
-  mat-card-subtitle{
-    margin: 10px;
-    height: 100%;
-    overflow: fragments;
+  .newBlogForm{
+    margin: 20px 20%;
+    width: 60%;
+  }
+
+  .inputTextArea{
+    width: 100%;
+  }
+
+  .errorMSG{
+    margin: 20px 10%;
+    width: 80%;
+    text-align: center;
+    color: red;
   }
 }

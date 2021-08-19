@@ -4,6 +4,9 @@
   </button>
   <span class="header-title">BLOG AWAY</span>
   <span *ngIf="username != undefined">{{username}}</span>
+  <button *ngIf="authService.signedIn" mat-icon-button (click)="onAddBlog()">
+    <mat-icon>library_add</mat-icon>
+  </button>
   <button mat-icon-button (click)="onProfile()">
     <mat-icon>person</mat-icon>
   </button>

@@ -2,6 +2,10 @@ mat-card{
   margin: 3%;
 }
 
+.inputTextArea{
+  width: 100%;
+}
+
 @media screen and (min-width: 1000px) {
   mat-card{
     margin: 5% 25%;

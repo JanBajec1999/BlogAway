@@ -23,8 +23,11 @@
     "@aws-amplify/ui-angular": "^1.0.18",
     "aws-amplify": "^4.2.3",
     "aws-amplify-angular": "^6.0.9",
+    "lodash": "^4.17.21",
     "rxjs": "~6.6.0",
     "tslib": "^2.1.0",
+    "uuid": "^8.3.2",
+    "uuid4": "^2.0.2",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
@@ -32,7 +35,9 @@
     "@angular/cli": "~12.0.4",
     "@angular/compiler-cli": "~12.0.4",
     "@types/jasmine": "~3.6.0",
+    "@types/lodash": "^4.14.172",
     "@types/node": "^12.11.1",
+    "@types/uuid": "^8.3.1",
     "graphql": "^15.5.1",
     "jasmine-core": "~3.7.0",
     "karma": "~6.3.0",

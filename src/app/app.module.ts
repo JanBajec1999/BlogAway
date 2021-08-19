@@ -22,6 +22,11 @@ import { ProfileComponent } from './profile/profile.component';
 import {AmplifyService} from "aws-amplify-angular";
 import {MatGridListModule} from "@angular/material/grid-list";
 import { BlogComponent } from './blog/blog.component';
+import { CommentComponent } from './comment/comment.component';
+import {MatExpansionModule} from "@angular/material/expansion";
+import {AuthGuardService} from "./services/auth-guard.service";
+import { AddBlogComponent } from './add-blog/add-blog.component';
+import { EditBlogComponent } from './edit-blog/edit-blog.component';
 
 Amplify.configure({
   Auth: {
@@ -50,16 +55,19 @@ Amplify.configure({
     HeaderComponent,
     HomeComponent,
     ProfileComponent,
-    BlogComponent
+    BlogComponent,
+    CommentComponent,
+    AddBlogComponent,
+    EditBlogComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MatCardModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatIconModule, MatToolbarModule, MatGridListModule
+    MatCardModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatIconModule, MatToolbarModule, MatGridListModule, MatExpansionModule
   ],
-  providers: [AmplifyService],
+  providers: [AmplifyService, AuthGuardService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

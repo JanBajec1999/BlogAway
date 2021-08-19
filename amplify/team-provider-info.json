@@ -18,7 +18,7 @@
       "function": {
         "blogaway83882c9a": {
           "deploymentBucketName": "amplify-blogaway-dev-161419-deployment",
-          "s3Key": "amplify-builds/blogaway83882c9a-4c6c4277475863686676-build.zip"
+          "s3Key": "amplify-builds/blogaway83882c9a-2f4b746d6144716f5477-build.zip"
         }
       }
     }

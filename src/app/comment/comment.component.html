@@ -1,0 +1,35 @@
+<mat-card>
+  <div>
+    <div class="container">
+      <div style="width: 100%"></div>
+      <mat-icon style="margin-right: 0">unfold_more</mat-icon>
+      <p class="votes-num">{{element.comment.votes}}</p>
+      <mat-icon *ngIf="currentUser != undefined && upvoteBool" color="primary" class="iconBTN" (click)="onUpVote()">thumb_up</mat-icon>
+      <mat-icon *ngIf="currentUser != undefined && !upvoteBool" class="iconBTN" (click)="onUpVote()">thumb_up</mat-icon>
+      <mat-icon *ngIf="currentUser != undefined && downvoteBool" color="primary" class="iconBTN" (click)="onDownVote()">thumb_down</mat-icon>
+      <mat-icon *ngIf="currentUser != undefined && !downvoteBool" class="iconBTN" (click)="onDownVote()">thumb_down</mat-icon>
+      <mat-icon *ngIf="currentUser != undefined" class="iconBTN" (click)="replyBool = !replyBool">reply</mat-icon>
+      <mat-icon *ngIf="currentUser != undefined && currentUser.username == element.comment.username" (click)="editBool = !editBool" class="iconBTN">edit</mat-icon>
+      <mat-icon *ngIf="currentUser != undefined && element.comment.son_ids.length == 0 && (currentUser.username == element.comment.username || element.blog.username == element.blog.username)" (click)="deleteCommentFun()" class="iconBTN">delete</mat-icon>
+    </div>
+    <p *ngIf="!editBool" style="width: 100%">{{element.comment.username}}  -  {{element.comment.comment}}</p>
+    <mat-form-field *ngIf="editBool" class="inputTextArea" appearance="fill">
+      <mat-label>Edit comment</mat-label>
+      <input [(ngModel)]="editComment" matInput placeholder="Edit...">
+      <button *ngIf="editBool" matSuffix mat-icon-button aria-label="Clear" (click)="editCommentFun()">
+        <mat-icon>check</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+  <div *ngFor="let el of element.comment.replies">
+    <app-comment [inputComment]="{comment: el, blog: element.blog}" (update_son_ids)="onDeleteCommentFun($event)"></app-comment>
+  </div>
+  <mat-form-field *ngIf="replyBool" class="inputTextArea" appearance="fill">
+    <mat-label>Reply to a comment</mat-label>
+    <input [(ngModel)]="commentReply" matInput placeholder="Reply...">
+    <button *ngIf="commentReply" matSuffix mat-icon-button aria-label="Clear" (click)="createComment()">
+      <mat-icon>send</mat-icon>
+    </button>
+  </mat-form-field>
+</mat-card>
+

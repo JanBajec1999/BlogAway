@@ -17,6 +17,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.blogs = this.blogsService.getBlogs();
+    this.authService.getUser();
   }
 
   signOut(){

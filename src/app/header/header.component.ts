@@ -28,4 +28,12 @@ export class HeaderComponent implements OnInit {
     }
   }
 
+  onAddBlog(){
+    if(this.authService.signedIn){
+      this.router.navigate(['addBlog'])
+    }else{
+      this.router.navigate(['auth'])
+    }
+  }
+
 }

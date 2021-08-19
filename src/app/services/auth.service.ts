@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {Auth} from "aws-amplify";
 import {Router} from "@angular/router";
 import {AmplifyService} from 'aws-amplify-angular';
+import {User} from "../classes/user";
 
 @Injectable({
   providedIn: 'root'
@@ -62,16 +63,25 @@ export class AuthService {
   async signOut() {
     try {
       await Auth.signOut();
+      this.router.navigate(['auth']);
     } catch (error) {
       console.log('error signing out: ', error);
     }
   }
 
   //tukej maš JWT TOKEN po uspešnem loginanju!!!!!!!!!!!!!!!!
-  getUser(){
-    Auth.currentSession()
-      .then(data => console.log(data.getAccessToken().getJwtToken()))
-      .catch(err => console.log(err));
+  getUser(): Promise<User> {
+    return Auth.currentSession()
+      .then(data => {
+        // console.log(data.getIdToken().payload.email);
+        // console.log(data.getIdToken().payload['cognito:username']);
+        //console.log(data.getIdToken().getJwtToken());
+        return new User(data.getIdToken().payload['cognito:username'], data.getIdToken().payload.email, data.getIdToken().getJwtToken());
+      })
+      .catch(err => {
+        console.log(err);
+        return new User("", "", "");
+      });
   }
 }
 

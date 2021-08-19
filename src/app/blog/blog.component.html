@@ -3,6 +3,21 @@
   <mat-card-content>
     <img mat-card-image src="data:image/png;base64,{{blog.img}}" alt="">
     <mat-card-subtitle>{{blog.content}}</mat-card-subtitle>
-    <mat-card-subtitle style="text-align: end; margin-top: 20px">{{blog.date}}</mat-card-subtitle>
+    <mat-card-subtitle style="text-align: end; margin-top: 20px"><strong>{{blog.username}}</strong>  -  {{blog.date}}</mat-card-subtitle>
   </mat-card-content>
 </mat-card>
+<mat-card>
+  <p style="margin-bottom: 30px">Comments: </p>
+  <div *ngIf="blog != undefined">
+    <app-comment *ngFor="let comment of comments" [inputComment]="{comment: comment, blog: blog}" (update_son_ids)="onDeleteCommentFun($event)"></app-comment>
+
+  </div>
+  <mat-form-field class="inputTextArea" appearance="fill">
+    <mat-label>Create a comment</mat-label>
+    <input [(ngModel)]="comment" matInput placeholder="Comment...">
+    <button *ngIf="comment" matSuffix mat-icon-button aria-label="Clear" (click)="createComment()">
+      <mat-icon>send</mat-icon>
+    </button>
+  </mat-form-field>
+</mat-card>
+<div style="height: 20px"></div>

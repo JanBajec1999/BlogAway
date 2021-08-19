@@ -1,11 +1,32 @@
 <mat-card>
-  <mat-card-header>
-    <mat-card-title>Profile</mat-card-title>
-  </mat-card-header>
   <mat-card-content>
-    <span></span>
+    <p class="profileTitle">Profile</p>
+    <div *ngIf="currentUser != undefined">
+      <p class="userInfo">Username: {{currentUser.username}}</p>
+      <p class="userInfo">Email: {{currentUser.email}}</p>
+    </div>
   </mat-card-content>
   <mat-card-footer>
-
+    <button class="button" mat-raised-button color="warn" (click)="signOut()">SIGN OUT</button>
   </mat-card-footer>
 </mat-card>
+<mat-card *ngFor="let blog of blogs" style="cursor: pointer" (click)="onBlogClick(blog.PK, blog.SK)">
+  <mat-card-title>{{blog.title}}</mat-card-title>
+  <mat-card-content>
+    <mat-grid-list cols="2" >
+      <mat-grid-tile>
+        <img mat-card-image src="data:image/png;base64,{{blog.img}}" alt="">
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <mat-card-subtitle>{{blog.content}}</mat-card-subtitle>
+      </mat-grid-tile>
+    </mat-grid-list>
+    <mat-card-subtitle style="margin-top: 15px"><strong>{{blog.username}}</strong>  -  {{blog.date}}</mat-card-subtitle>
+  </mat-card-content>
+  <div style="display: flex">
+    <button style="width: 45%; margin-right: 10%" mat-raised-button color="primary" (click)="edit(blog)">EDIT</button>
+    <button style="width: 45%" mat-raised-button color="warn" (click)="delete(blog)">DELETE</button>
+  </div>
+</mat-card>
+<div style="height: 20px"></div>
+

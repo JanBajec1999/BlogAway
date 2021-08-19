@@ -1,0 +1,23 @@
+<mat-card>
+  <mat-card-content>
+    <p class="profileTitle">Add Blog</p>
+    <div *ngIf="isImageSaved" style="margin: 100px 20% 0 20%">
+      <img mat-card-image src="data:image/png;base64,{{cardImageBase64}}" alt="">
+    </div>
+    <p class="errorMSG" >{{imageError}}</p>
+    <button *ngIf="isImageSaved" class="button" mat-raised-button color="warn" (click)="removeImage()">REMOVE IMAGE</button>
+    <input #imageInput [hidden]="true" type="file" (change)="handleUpload($event)">
+    <button mat-raised-button class="button" (click)="imageInput.click()">Choose Image</button>
+    <div class="newBlogForm">
+      <mat-form-field class="inputTextArea" appearance="fill">
+        <mat-label>Title</mat-label>
+        <input [(ngModel)]="title" matInput placeholder="My new blog's title">
+      </mat-form-field>
+      <mat-form-field class="inputTextArea" appearance="fill">
+        <mat-label>Blogs' content</mat-label>
+        <textarea [(ngModel)]="content" style="height: 400px" matInput placeholder="Write your own blog..."></textarea>
+      </mat-form-field>
+    </div>
+    <button [disabled]="cardImageBase64 == null || title == '' || content == '' " mat-raised-button class="button" color="primary" (click)="postBlog()">POST BLOG</button>
+  </mat-card-content>
+</mat-card>

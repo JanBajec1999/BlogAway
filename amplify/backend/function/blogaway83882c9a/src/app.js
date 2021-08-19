@@ -34,7 +34,15 @@ const hashKeyPath = '/:' + partitionKeyName;
 const sortKeyPath = hasSortKey ? '/:' + sortKeyName : '';
 // declare a new express app
 var app = express()
-app.use(bodyParser.json())
+app.use(bodyParser.json({
+  limit: '5mb'
+}));
+
+app.use(bodyParser.urlencoded({
+  limit: '5mb',
+  parameterLimit: 100000,
+  extended: true
+}));
 app.use(awsServerlessExpressMiddleware.eventContext())
 
 // Enable CORS for all methods
@@ -81,6 +89,33 @@ app.get(path, function(req, res) {
   });
 });
 
+/********************************
+ GET ALL BLOGS BY USER
+ ********************************/
+
+app.get(path + '/user', function(req, res) {
+
+  let queryParams = {
+    TableName: tableName,
+    IndexName: 'username-SK-index',
+    KeyConditionExpression: "username = :username AND begins_with(SK, :beg)",
+    ExpressionAttributeValues: {
+      ":username" : req.query.username,
+      ":beg" : "B#"
+    }
+
+  }
+
+  dynamodb.query(queryParams, (err, data) => {
+    if (err) {
+      res.statusCode = 500;
+      res.json({error: 'Could not load items: ' + err});
+    } else {
+      res.json(data.Items);
+    }
+  });
+});
+
 /*****************************************
 GET OBJECT BY ID
  *****************************************/
@@ -109,13 +144,22 @@ app.get(path + '/object', function(req, res) {
   });
 });
 
+/*****************************************
+ GET COMMENTS OF BLOG
+ *****************************************/
+
 app.get(path + '/comments', function(req, res) {
 
   let getItemParams = {
     TableName: tableName,
-    Key: {
-      PK: req.query.PK,
-      SK: req.query.SK
+    KeyConditionExpression: "#PK = :PK and begins_with(#SK, :SK) ",
+    ExpressionAttributeNames:{
+      "#PK": "PK",
+      "#SK": "SK"
+    },
+    ExpressionAttributeValues: {
+      ":PK": req.query.PK,
+      ":SK": "C#"
     }
   }
 
@@ -133,85 +177,11 @@ app.get(path + '/comments', function(req, res) {
   });
 });
 
-// /*****************************************
-//  * HTTP Get method for get single object *
-//  *****************************************/
-//
-// app.get(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
-//   var params = {};
-//   if (userIdPresent && req.apiGateway) {
-//     params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
-//   } else {
-//     params[partitionKeyName] = req.params[partitionKeyName];
-//     try {
-//       params[partitionKeyName] = convertUrlType(req.params[partitionKeyName], partitionKeyType);
-//     } catch(err) {
-//       res.statusCode = 500;
-//       res.json({error: 'Wrong column type ' + err});
-//     }
-//   }
-//   if (hasSortKey) {
-//     try {
-//       params[sortKeyName] = convertUrlType(req.params[sortKeyName], sortKeyType);
-//     } catch(err) {
-//       res.statusCode = 500;
-//       res.json({error: 'Wrong column type ' + err});
-//     }
-//   }
-//
-//   let getItemParams = {
-//     TableName: tableName,
-//     Key: params
-//   }
-//
-//   dynamodb.get(getItemParams,(err, data) => {
-//     if(err) {
-//       res.statusCode = 500;
-//       res.json({error: 'Could not load items: ' + err.message});
-//     } else {
-//       if (data.Item) {
-//         res.json(data.Item);
-//       } else {
-//         res.json(data) ;
-//       }
-//     }
-//   });
-// });
-
-
 /************************************
-* HTTP put method for insert object *
-*************************************/
-
-app.put(path, function(req, res) {
-
-  if (userIdPresent) {
-    req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
-  }
-
-  let putItemParams = {
-    TableName: tableName,
-    Item: req.body
-  }
-  dynamodb.put(putItemParams, (err, data) => {
-    if(err) {
-      res.statusCode = 500;
-      res.json({error: err, url: req.url, body: req.body});
-    } else{
-      res.json({success: 'put call succeed!', url: req.url, data: data})
-    }
-  });
-});
-
-/************************************
-* HTTP post method for insert object *
+UPDATE BLOG OR COMMENT
 *************************************/
 
 app.post(path, function(req, res) {
-
-  if (userIdPresent) {
-    req.body['userId'] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
-  }
 
   let putItemParams = {
     TableName: tableName,
@@ -228,34 +198,17 @@ app.post(path, function(req, res) {
 });
 
 /**************************************
-* HTTP remove method to delete object *
+DELETE BLOG
 ***************************************/
 
-app.delete(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
-  var params = {};
-  if (userIdPresent && req.apiGateway) {
-    params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
-  } else {
-    params[partitionKeyName] = req.params[partitionKeyName];
-     try {
-      params[partitionKeyName] = convertUrlType(req.params[partitionKeyName], partitionKeyType);
-    } catch(err) {
-      res.statusCode = 500;
-      res.json({error: 'Wrong column type ' + err});
-    }
-  }
-  if (hasSortKey) {
-    try {
-      params[sortKeyName] = convertUrlType(req.params[sortKeyName], sortKeyType);
-    } catch(err) {
-      res.statusCode = 500;
-      res.json({error: 'Wrong column type ' + err});
-    }
-  }
+app.delete(path + '/user', function(req, res) {
 
   let removeItemParams = {
     TableName: tableName,
-    Key: params
+    Key: {
+      PK: req.query.PK,
+      SK: req.query.SK
+    }
   }
   dynamodb.delete(removeItemParams, (err, data)=> {
     if(err) {
@@ -266,6 +219,48 @@ app.delete(path + '/object' + hashKeyPath + sortKeyPath, function(req, res) {
     }
   });
 });
+
+
+/************************************
+ CREATE POST
+ *************************************/
+
+app.put(path, function(req, res) {
+
+  let putItemParams = {
+    TableName: tableName,
+    Item: req.body
+  }
+  dynamodb.put(putItemParams, (err, data) => {
+    if(err) {
+      res.statusCode = 500;
+      res.json({error: err, url: req.url, body: req.body});
+    } else{
+      res.json({success: 'put call succeed!', url: req.url, data: data})
+    }
+  });
+});
+
+/************************************
+ CREATE COMMENT
+ *************************************/
+
+app.put(path + '/usercomments', function(req, res) {
+
+  let putItemParams = {
+    TableName: tableName,
+    Item: req.body
+  }
+  dynamodb.put(putItemParams, (err, data) => {
+    if(err) {
+      res.statusCode = 500;
+      res.json({error: err, url: req.url, body: req.body});
+    } else{
+      res.json({success: 'put call succeed!', url: req.url, data: data})
+    }
+  });
+});
+
 app.listen(3000, function() {
     console.log("App started")
 });
