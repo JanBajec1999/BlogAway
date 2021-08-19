@@ -1,5 +1,13 @@
-mat-card{
-  margin: 3%;
+@media screen and (max-width: 1000px) {
+  mat-card{
+    margin: 3%;
+  }
+}
+
+@media screen and (min-width: 1000px) {
+  mat-card{
+    margin: 3% 20%;
+  }
 }
 
 .card-img{

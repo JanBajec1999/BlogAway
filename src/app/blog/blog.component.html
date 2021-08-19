@@ -12,7 +12,7 @@
     <app-comment *ngFor="let comment of comments" [inputComment]="{comment: comment, blog: blog}" (update_son_ids)="onDeleteCommentFun($event)"></app-comment>
 
   </div>
-  <mat-form-field class="inputTextArea" appearance="fill">
+  <mat-form-field *ngIf="authService.signedIn" class="inputTextArea" appearance="fill">
     <mat-label>Create a comment</mat-label>
     <input [(ngModel)]="comment" matInput placeholder="Comment...">
     <button *ngIf="comment" matSuffix mat-icon-button aria-label="Clear" (click)="createComment()">
