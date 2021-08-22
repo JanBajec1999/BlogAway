@@ -10,7 +10,7 @@
       <mat-icon *ngIf="currentUser != undefined && !downvoteBool" class="iconBTN" (click)="onDownVote()">thumb_down</mat-icon>
       <mat-icon *ngIf="currentUser != undefined" class="iconBTN" (click)="replyBool = !replyBool">reply</mat-icon>
       <mat-icon *ngIf="currentUser != undefined && currentUser.username == element.comment.username" (click)="editBool = !editBool" class="iconBTN">edit</mat-icon>
-      <mat-icon *ngIf="currentUser != undefined && element.comment.son_ids.length == 0 && (currentUser.username == element.comment.username || element.blog.username == element.blog.username)" (click)="deleteCommentFun()" class="iconBTN">delete</mat-icon>
+      <mat-icon *ngIf="currentUser != undefined && element.comment.son_ids.length == 0 && (currentUser.username == element.comment.username || currentUser.username == element.blog.username)" (click)="deleteCommentFun()" class="iconBTN">delete</mat-icon>
     </div>
     <p *ngIf="!editBool" style="width: 100%">{{element.comment.username}}  -  {{element.comment.comment}}</p>
     <mat-form-field *ngIf="editBool" class="inputTextArea" appearance="fill">
