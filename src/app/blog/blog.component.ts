@@ -41,6 +41,7 @@ export class BlogComponent implements OnInit {
       const SK = "C#" + uuidv4();
       this.blogsService.createComment(SK, this.blog.PK, this.comment, '', this.currentUser);
       this.comments?.push(new Comment(this.blog.PK, SK, this.comment, Date.now().toLocaleString(), this.currentUser.username, [], [], []))
+      this.comment = "";
     }
   }
 

@@ -51,8 +51,9 @@ export class AddBlogComponent implements OnInit {
         const image = new Image();
         image.src = e.target.result;
         image.onload = rs => {
-          const imgBase64Path = e.target.result;
-          this.cardImageBase64 = imgBase64Path.substring(23);
+          // const imgBase64Path = e.target.result;
+          // console.log(imgBase64Path);
+          this.cardImageBase64 = e.target.result;
           this.isImageSaved = true;
         };
       };

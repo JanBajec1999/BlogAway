@@ -53,6 +53,7 @@ export class CommentComponent implements OnInit {
         let x = new Comment(this.element.comment.PK, SK, this.commentReply, Date.now().toLocaleString(), this.currentUser.username, [], [], []);
         x.father_id = this.element.comment.SK.substring(2);
         this.element.comment.replies.push(x);
+        this.commentReply = "";
       }
     }
 

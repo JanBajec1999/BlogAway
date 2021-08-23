@@ -2,7 +2,7 @@
   <mat-card-content>
     <p class="profileTitle">Edit Blog</p>
     <div *ngIf="isImageSaved" style="margin: 100px 20% 0 20%">
-      <img mat-card-image src="data:image/png;base64,{{cardImageBase64}}" alt="">
+      <img mat-card-image src="{{cardImageBase64}}" alt="">
     </div>
     <p class="errorMSG" >{{imageError}}</p>
     <button *ngIf="isImageSaved" class="button" mat-raised-button color="warn" (click)="removeImage()">REMOVE IMAGE</button>
