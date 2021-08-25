@@ -23,6 +23,7 @@
     "@aws-amplify/ui-angular": "^1.0.18",
     "aws-amplify": "^4.2.3",
     "aws-amplify-angular": "^6.0.9",
+    "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "rxjs": "~6.6.0",
     "tslib": "^2.1.0",

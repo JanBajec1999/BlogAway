@@ -12,6 +12,9 @@ const AWS = require('aws-sdk')
 var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
 var bodyParser = require('body-parser')
 var express = require('express')
+var jwt = require('jsonwebtoken');
+var jwksClient = require('jwks-rsa');
+var publicKeyJWT = "AL9Kz62JHMpn5kBEqyoaXkM56x3l3Wi0kg0Juv71QtXo5M4ZJYxouKdcrKfevYTRNm6DE0hTbJnyj7Bh4EYbmruGdSWE970xkcFJxcgak0j4rneRX5G1E/xN27M42OOLmZCe8O6l3nksD0XGOqBPqOSEP3pYCNAYMncpSGnit56fUX+yszfMjGP3DVSUFZKtXbqwt/S0VpBi5BQbbD57R8DKenQsPfln91tgGopmXP66vZ4yWRUzs/mqHxcez3FcgHHXc6AbEJ6GOSVd9t+BCUW5kVY0aYO301PJczvB3zfsI6qebjS6BFTvMp8SqK532ZRnXEMgs/5gc9cfxpDsgvk="
 
 AWS.config.update({ region: process.env.TABLE_REGION });
 
@@ -62,6 +65,16 @@ const convertUrlType = (param, type) => {
   }
 }
 
+var client = jwksClient({
+  jwksUri: 'https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_UhkP2HQpu/.well-known/jwks.json'
+});
+function getKey(header, callback){
+  client.getSigningKey(header.kid, function(err, key) {
+    var signingKey = key.publicKey || key.rsaPublicKey;
+    callback(null, signingKey);
+  });
+}
+
 /********************************
  GET ALL BLOGS
  ********************************/
@@ -94,6 +107,20 @@ app.get(path, function(req, res) {
  ********************************/
 
 app.get(path + '/user', function(req, res) {
+
+  try {
+    jwt.verify(req.headers['authorization'], getKey, { algorithms: ['RS256'] }, function (err, result) {
+      if(result['cognito:username'] !== req.query.username){
+        console.log(result['cognito:username']);
+        console.log(req.query.username);
+        res.statusCode = 500;
+        res.json({error: 'Could not load items: wrong JWT'});
+      }
+    });
+  } catch(err) {
+    res.statusCode = 500;
+    res.json({error: 'Could not load items: ' + err});
+  }
 
   let queryParams = {
     TableName: tableName,
@@ -183,6 +210,20 @@ UPDATE BLOG OR COMMENT
 
 app.post(path, function(req, res) {
 
+  try {
+    jwt.verify(req.headers['authorization'], getKey, { algorithms: ['RS256'] }, function (err, result) {
+      if(result['cognito:username'] !== req.body.username){
+        console.log(result['cognito:username']);
+        console.log(req.body.username);
+        res.statusCode = 500;
+        res.json({error: 'Could not load items: wrong JWT'});
+      }
+    });
+  } catch(err) {
+    res.statusCode = 500;
+    res.json({error: 'Could not load items: ' + err});
+  }
+
   let putItemParams = {
     TableName: tableName,
     Item: req.body
@@ -202,6 +243,20 @@ DELETE BLOG
 ***************************************/
 
 app.delete(path + '/user', function(req, res) {
+
+  try {
+    jwt.verify(req.headers['authorization'], getKey, { algorithms: ['RS256'] }, function (err, result) {
+      if(result['cognito:username'] !== req.query.username){
+        console.log(result['cognito:username']);
+        console.log(req.query.username);
+        res.statusCode = 500;
+        res.json({error: 'Could not load items: wrong JWT'});
+      }
+    });
+  } catch(err) {
+    res.statusCode = 500;
+    res.json({error: 'Could not load items: ' + err});
+  }
 
   let removeItemParams = {
     TableName: tableName,
@@ -227,6 +282,20 @@ app.delete(path + '/user', function(req, res) {
 
 app.put(path, function(req, res) {
 
+  try {
+    jwt.verify(req.headers['authorization'], getKey, { algorithms: ['RS256'] }, function (err, result) {
+      if(result['cognito:username'] !== req.body.username){
+        console.log(result['cognito:username']);
+        console.log(req.body.username);
+        res.statusCode = 500;
+        res.json({error: 'Could not load items: wrong JWT'});
+      }
+    });
+  } catch(err) {
+    res.statusCode = 500;
+    res.json({error: 'Could not load items: ' + err});
+  }
+
   let putItemParams = {
     TableName: tableName,
     Item: req.body
@@ -246,6 +315,20 @@ app.put(path, function(req, res) {
  *************************************/
 
 app.put(path + '/usercomments', function(req, res) {
+
+  try {
+    jwt.verify(req.headers['authorization'], getKey, { algorithms: ['RS256'] }, function (err, result) {
+      if(result['cognito:username'] !== req.body.username){
+        console.log(result['cognito:username']);
+        console.log(req.body.username);
+        res.statusCode = 500;
+        res.json({error: 'Could not load items: wrong JWT'});
+      }
+    });
+  } catch(err) {
+    res.statusCode = 500;
+    res.json({error: 'Could not load items: ' + err});
+  }
 
   let putItemParams = {
     TableName: tableName,

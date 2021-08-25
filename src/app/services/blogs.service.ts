@@ -161,7 +161,7 @@ export class BlogsService {
     })
   }
 
-  deleteBlog(PK: string, SK: string, user: User): Promise<Number>{
+  deleteBlog(PK: string, SK: string, username: String, user: User): Promise<Number>{
     const myInit = { // OPTIONAL
       headers: {
         Authorization: user.JWT
@@ -169,7 +169,8 @@ export class BlogsService {
       response: true, // OPTIONAL (return the entire Axios response object instead of only response.data)
       queryStringParameters: {
         PK: PK,
-        SK: SK
+        SK: SK,
+        username: username
       }
     };
     return API.del(this.nameAPI, this.path + '/user', myInit)
@@ -182,7 +183,7 @@ export class BlogsService {
     })
   }
 
-  deleteComment(PK: string, SK: string, user: User): Promise<Number>{
+  deleteComment(PK: string, SK: string, username: String, user: User): Promise<Number>{
     const myInit = { // OPTIONAL
       headers: {
         Authorization: user.JWT
@@ -190,7 +191,8 @@ export class BlogsService {
       response: true, // OPTIONAL (return the entire Axios response object instead of only response.data)
       queryStringParameters: {
         PK: PK,
-        SK: SK
+        SK: SK,
+        username: username
       }
     };
     return API.del(this.nameAPI, this.path + '/user', myInit)
