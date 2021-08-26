@@ -75,7 +75,7 @@ export class AuthService {
       .then(data => {
         // console.log(data.getIdToken().payload.email);
         // console.log(data.getIdToken().payload['cognito:username']);
-        console.log(data.getIdToken().getJwtToken());
+        //console.log(data.getIdToken().getJwtToken());
         return new User(data.getIdToken().payload['cognito:username'], data.getIdToken().payload.email, data.getIdToken().getJwtToken());
       })
       .catch(err => {

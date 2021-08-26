@@ -96,7 +96,7 @@ export class BlogsService {
         PK: blogPK
       }
     };
-    return API.get(this.nameAPI, this.pathBlog + '/comments', myInit).then(response => {
+    return API.get(this.nameAPI, this.pathComment, myInit).then(response => {
       const comments: Comment[] = [];
       const replies: Comment[] = [];
       for(let i = 0; i < response.data.Count; i++){
@@ -173,7 +173,7 @@ export class BlogsService {
         SK: SK,
       }
     };
-    return API.del(this.nameAPI, this.pathBlog + '/user', myInit)
+    return API.del(this.nameAPI, this.pathBlog, myInit)
       .then(response => {
         this.router.navigate(['profile']);
         return 1;
@@ -194,7 +194,7 @@ export class BlogsService {
         SK: SK,
       }
     };
-    return API.del(this.nameAPI, this.pathBlog, myInit)
+    return API.del(this.nameAPI, this.pathComment, myInit)
       .then(response => {
         return 1;
       }).catch(error =>{
@@ -248,7 +248,7 @@ export class BlogsService {
           down_votes: []
         }
       };
-      API.put(this.nameAPI, this.pathBlog + '/usercomments', myInit)
+      API.put(this.nameAPI, this.pathComment, myInit)
         .then(response => {
           console.log(response);
         }).catch(error =>{
@@ -272,7 +272,7 @@ export class BlogsService {
           down_votes: []
         }
       };
-      API.put(this.nameAPI, this.pathBlog + '/usercomments', myInit)
+      API.put(this.nameAPI, this.pathComment, myInit)
         .then(response => {
           console.log(response);
         }).catch(error =>{
@@ -298,7 +298,7 @@ export class BlogsService {
         username: comment.username
       }
     };
-    return API.post(this.nameAPI, this.pathBlog, myInit)
+    return API.post(this.nameAPI, this.pathComment, myInit)
       .then(response => {
         return 1;
       }).catch(error =>{
