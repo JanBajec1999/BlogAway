@@ -16,7 +16,8 @@ export class BlogsService {
   constructor(public router: Router, public authService: AuthService) { }
 
   nameAPI = 'api719655d7';
-  path = '/blogs';
+  pathBlog = '/blogs';
+  pathComment = '/comments';
 
   getBlogs(): Blog[]{
     //how to get date to string to save to dynamodb
@@ -30,7 +31,7 @@ export class BlogsService {
       queryStringParameters: {}
     };
     const blogArray: Blog[] = [];
-    API.get(this.nameAPI, this.path, myInit).then(response => {
+    API.get(this.nameAPI, this.pathBlog, myInit).then(response => {
       for(let i = 0; i < response.data.length; i++){
         let ts = response.data[i].SK.substring(2);
         ts = Number(ts);
@@ -57,7 +58,7 @@ export class BlogsService {
       }
     };
     const blogArray: Blog[] = [];
-    API.get(this.nameAPI, this.path + '/user', myInit).then(response => {
+    API.get(this.nameAPI, this.pathBlog + '/user', myInit).then(response => {
       for(let i = 0; i < response.data.length; i++){
         let ts = response.data[i].SK.substring(2);
         ts = Number(ts);
@@ -79,7 +80,7 @@ export class BlogsService {
         SK: blogSK
       }
     };
-    return API.get(this.nameAPI, this.path + '/object', myInit).then(response => {
+    return API.get(this.nameAPI, this.pathBlog + '/object', myInit).then(response => {
       let ts = response.data.SK.substring(2);
       ts = Number(ts);
       const newDate = new Date(ts);
@@ -95,7 +96,7 @@ export class BlogsService {
         PK: blogPK
       }
     };
-    return API.get(this.nameAPI, this.path + '/comments', myInit).then(response => {
+    return API.get(this.nameAPI, this.pathBlog + '/comments', myInit).then(response => {
       const comments: Comment[] = [];
       const replies: Comment[] = [];
       for(let i = 0; i < response.data.Count; i++){
@@ -153,7 +154,7 @@ export class BlogsService {
         username: user.username
       }
     };
-    API.put(this.nameAPI, this.path, myInit)
+    API.put(this.nameAPI, this.pathBlog, myInit)
       .then(response => {
         this.router.navigate(['profile']);
       }).catch(error =>{
@@ -161,7 +162,7 @@ export class BlogsService {
     })
   }
 
-  deleteBlog(PK: string, SK: string, username: String, user: User): Promise<Number>{
+  deleteBlog(PK: string, SK: string, user: User): Promise<Number>{
     const myInit = { // OPTIONAL
       headers: {
         Authorization: user.JWT
@@ -170,10 +171,9 @@ export class BlogsService {
       queryStringParameters: {
         PK: PK,
         SK: SK,
-        username: username
       }
     };
-    return API.del(this.nameAPI, this.path + '/user', myInit)
+    return API.del(this.nameAPI, this.pathBlog + '/user', myInit)
       .then(response => {
         this.router.navigate(['profile']);
         return 1;
@@ -183,7 +183,7 @@ export class BlogsService {
     })
   }
 
-  deleteComment(PK: string, SK: string, username: String, user: User): Promise<Number>{
+  deleteComment(PK: string, SK: string, user: User): Promise<Number>{
     const myInit = { // OPTIONAL
       headers: {
         Authorization: user.JWT
@@ -192,10 +192,9 @@ export class BlogsService {
       queryStringParameters: {
         PK: PK,
         SK: SK,
-        username: username
       }
     };
-    return API.del(this.nameAPI, this.path + '/user', myInit)
+    return API.del(this.nameAPI, this.pathBlog, myInit)
       .then(response => {
         return 1;
       }).catch(error =>{
@@ -219,7 +218,7 @@ export class BlogsService {
         username: user.username
       }
     };
-    return API.post(this.nameAPI, this.path, myInit)
+    return API.post(this.nameAPI, this.pathBlog, myInit)
       .then(response => {
         this.router.navigate(['profile']);
         return 1;
@@ -249,7 +248,7 @@ export class BlogsService {
           down_votes: []
         }
       };
-      API.put(this.nameAPI, this.path + '/usercomments', myInit)
+      API.put(this.nameAPI, this.pathBlog + '/usercomments', myInit)
         .then(response => {
           console.log(response);
         }).catch(error =>{
@@ -273,7 +272,7 @@ export class BlogsService {
           down_votes: []
         }
       };
-      API.put(this.nameAPI, this.path + '/usercomments', myInit)
+      API.put(this.nameAPI, this.pathBlog + '/usercomments', myInit)
         .then(response => {
           console.log(response);
         }).catch(error =>{
@@ -299,7 +298,7 @@ export class BlogsService {
         username: comment.username
       }
     };
-    return API.post(this.nameAPI, this.path, myInit)
+    return API.post(this.nameAPI, this.pathBlog, myInit)
       .then(response => {
         return 1;
       }).catch(error =>{

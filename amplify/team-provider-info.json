@@ -18,7 +18,11 @@
       "function": {
         "blogaway83882c9a": {
           "deploymentBucketName": "amplify-blogaway-dev-161419-deployment",
-          "s3Key": "amplify-builds/blogaway83882c9a-765373496e5579304a50-build.zip"
+          "s3Key": "amplify-builds/blogaway83882c9a-314f773868425453694d-build.zip"
+        },
+        "blogaway7083f9c6": {
+          "deploymentBucketName": "amplify-blogaway-dev-161419-deployment",
+          "s3Key": "amplify-builds/blogaway7083f9c6-78736c4772754c5a6d69-build.zip"
         }
       }
     }

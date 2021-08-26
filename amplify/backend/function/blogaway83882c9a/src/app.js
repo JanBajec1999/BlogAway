@@ -12,8 +12,6 @@ const AWS = require('aws-sdk')
 var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
 var bodyParser = require('body-parser')
 var express = require('express')
-var jwt = require('jsonwebtoken');
-var jwksClient = require('jwks-rsa');
 var publicKeyJWT = "AL9Kz62JHMpn5kBEqyoaXkM56x3l3Wi0kg0Juv71QtXo5M4ZJYxouKdcrKfevYTRNm6DE0hTbJnyj7Bh4EYbmruGdSWE970xkcFJxcgak0j4rneRX5G1E/xN27M42OOLmZCe8O6l3nksD0XGOqBPqOSEP3pYCNAYMncpSGnit56fUX+yszfMjGP3DVSUFZKtXbqwt/S0VpBi5BQbbD57R8DKenQsPfln91tgGopmXP66vZ4yWRUzs/mqHxcez3FcgHHXc6AbEJ6GOSVd9t+BCUW5kVY0aYO301PJczvB3zfsI6qebjS6BFTvMp8SqK532ZRnXEMgs/5gc9cfxpDsgvk="
 
 AWS.config.update({ region: process.env.TABLE_REGION });
@@ -65,16 +63,6 @@ const convertUrlType = (param, type) => {
   }
 }
 
-var client = jwksClient({
-  jwksUri: 'https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_UhkP2HQpu/.well-known/jwks.json'
-});
-function getKey(header, callback){
-  client.getSigningKey(header.kid, function(err, key) {
-    var signingKey = key.publicKey || key.rsaPublicKey;
-    callback(null, signingKey);
-  });
-}
-
 /********************************
  GET ALL BLOGS
  ********************************/
@@ -108,20 +96,6 @@ app.get(path, function(req, res) {
 
 app.get(path + '/user', function(req, res) {
 
-  try {
-    jwt.verify(req.headers['authorization'], getKey, { algorithms: ['RS256'] }, function (err, result) {
-      if(result['cognito:username'] !== req.query.username){
-        console.log(result['cognito:username']);
-        console.log(req.query.username);
-        res.statusCode = 500;
-        res.json({error: 'Could not load items: wrong JWT'});
-      }
-    });
-  } catch(err) {
-    res.statusCode = 500;
-    res.json({error: 'Could not load items: ' + err});
-  }
-
   let queryParams = {
     TableName: tableName,
     IndexName: 'username-SK-index',
@@ -144,7 +118,7 @@ app.get(path + '/user', function(req, res) {
 });
 
 /*****************************************
-GET OBJECT BY ID
+GET BLOG BY ID
  *****************************************/
 
 app.get(path + '/object', function(req, res) {
@@ -171,69 +145,47 @@ app.get(path + '/object', function(req, res) {
   });
 });
 
-/*****************************************
- GET COMMENTS OF BLOG
- *****************************************/
+/************************************
+UPDATE BLOG
+*************************************/
 
-app.get(path + '/comments', function(req, res) {
+app.post(path, function(req, res) {
+
+  let clientUsername = req.apiGateway.event.requestContext.authorizer.claims['cognito:username'];
 
   let getItemParams = {
     TableName: tableName,
-    KeyConditionExpression: "#PK = :PK and begins_with(#SK, :SK) ",
-    ExpressionAttributeNames:{
-      "#PK": "PK",
-      "#SK": "SK"
-    },
-    ExpressionAttributeValues: {
-      ":PK": req.query.PK,
-      ":SK": "C#"
+    Key: {
+      PK: req.body.PK,
+      SK: req.body.SK
     }
   }
 
-  dynamodb.query(getItemParams,(err, data) => {
+  dynamodb.get(getItemParams,(err, data) => {
     if(err) {
       res.statusCode = 500;
       res.json({error: 'Could not load items: ' + err});
     } else {
       if (data.Item) {
-        res.json(data.Item);
+        console.log(data.Item.username + " in " + clientUsername);
+        if(data.Item.username === clientUsername){
+
+          let putItemParams = {
+            TableName: tableName,
+            Item: req.body
+          }
+          dynamodb.put(putItemParams, (err, data) => {
+            if(err) {
+              res.statusCode = 500;
+              res.json({error: err, url: req.url, body: req.body});
+            } else{
+              res.json({success: 'post call succeed!', url: req.url, data: data})
+            }
+          });
+        }
       } else {
-        res.json(data) ;
+        res.json({error: "Ni Items"});
       }
-    }
-  });
-});
-
-/************************************
-UPDATE BLOG OR COMMENT
-*************************************/
-
-app.post(path, function(req, res) {
-
-  try {
-    jwt.verify(req.headers['authorization'], getKey, { algorithms: ['RS256'] }, function (err, result) {
-      if(result['cognito:username'] !== req.body.username){
-        console.log(result['cognito:username']);
-        console.log(req.body.username);
-        res.statusCode = 500;
-        res.json({error: 'Could not load items: wrong JWT'});
-      }
-    });
-  } catch(err) {
-    res.statusCode = 500;
-    res.json({error: 'Could not load items: ' + err});
-  }
-
-  let putItemParams = {
-    TableName: tableName,
-    Item: req.body
-  }
-  dynamodb.put(putItemParams, (err, data) => {
-    if(err) {
-      res.statusCode = 500;
-      res.json({error: err, url: req.url, body: req.body});
-    } else{
-      res.json({success: 'post call succeed!', url: req.url, data: data})
     }
   });
 });
@@ -242,93 +194,55 @@ app.post(path, function(req, res) {
 DELETE BLOG
 ***************************************/
 
-app.delete(path + '/user', function(req, res) {
+app.delete(path, function(req, res) {
 
-  try {
-    jwt.verify(req.headers['authorization'], getKey, { algorithms: ['RS256'] }, function (err, result) {
-      if(result['cognito:username'] !== req.query.username){
-        console.log(result['cognito:username']);
-        console.log(req.query.username);
-        res.statusCode = 500;
-        res.json({error: 'Could not load items: wrong JWT'});
-      }
-    });
-  } catch(err) {
-    res.statusCode = 500;
-    res.json({error: 'Could not load items: ' + err});
-  }
+  let clientUsername = req.apiGateway.event.requestContext.authorizer.claims['cognito:username'];
 
-  let removeItemParams = {
+  let getItemParams = {
     TableName: tableName,
     Key: {
       PK: req.query.PK,
       SK: req.query.SK
     }
   }
-  dynamodb.delete(removeItemParams, (err, data)=> {
+
+  dynamodb.get(getItemParams,(err, data) => {
     if(err) {
       res.statusCode = 500;
-      res.json({error: err, url: req.url});
+      res.json({error: 'Could not load items: ' + err});
     } else {
-      res.json({url: req.url, data: data});
+      if (data.Item) {
+        console.log(data.Item.username + " in " + clientUsername);
+        if(data.Item.username === clientUsername){
+          let removeItemParams = {
+            TableName: tableName,
+            Key: {
+              PK: req.query.PK,
+              SK: req.query.SK
+            }
+          }
+          dynamodb.delete(removeItemParams, (err, data)=> {
+            if(err) {
+              res.statusCode = 500;
+              res.json({error: err, url: req.url});
+            } else {
+              res.json({url: req.url, data: data});
+            }
+          });
+        }
+      } else {
+        res.json({error: "Ni Items"});
+      }
     }
   });
 });
 
 
 /************************************
- CREATE POST
+ CREATE BLOG
  *************************************/
 
 app.put(path, function(req, res) {
-
-  try {
-    jwt.verify(req.headers['authorization'], getKey, { algorithms: ['RS256'] }, function (err, result) {
-      if(result['cognito:username'] !== req.body.username){
-        console.log(result['cognito:username']);
-        console.log(req.body.username);
-        res.statusCode = 500;
-        res.json({error: 'Could not load items: wrong JWT'});
-      }
-    });
-  } catch(err) {
-    res.statusCode = 500;
-    res.json({error: 'Could not load items: ' + err});
-  }
-
-  let putItemParams = {
-    TableName: tableName,
-    Item: req.body
-  }
-  dynamodb.put(putItemParams, (err, data) => {
-    if(err) {
-      res.statusCode = 500;
-      res.json({error: err, url: req.url, body: req.body});
-    } else{
-      res.json({success: 'put call succeed!', url: req.url, data: data})
-    }
-  });
-});
-
-/************************************
- CREATE COMMENT
- *************************************/
-
-app.put(path + '/usercomments', function(req, res) {
-
-  try {
-    jwt.verify(req.headers['authorization'], getKey, { algorithms: ['RS256'] }, function (err, result) {
-      if(result['cognito:username'] !== req.body.username){
-        console.log(result['cognito:username']);
-        console.log(req.body.username);
-        res.statusCode = 500;
-        res.json({error: 'Could not load items: wrong JWT'});
-      }
-    });
-  } catch(err) {
-    res.statusCode = 500;
-    res.json({error: 'Could not load items: ' + err});
-  }
 
   let putItemParams = {
     TableName: tableName,

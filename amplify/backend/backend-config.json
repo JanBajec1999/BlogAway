@@ -49,6 +49,25 @@
           }
         }
       ]
+    },
+    "blogaway7083f9c6": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "dependsOn": [
+        {
+          "category": "storage",
+          "resourceName": "dynamod3b77235",
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "attributeEnvMap": {
+            "Name": "TABLE_NAME",
+            "Arn": "TABLE_ARN"
+          }
+        }
+      ]
     }
   },
   "api": {
@@ -59,6 +78,14 @@
         {
           "category": "function",
           "resourceName": "blogaway83882c9a",
+          "attributes": [
+            "Name",
+            "Arn"
+          ]
+        },
+        {
+          "category": "function",
+          "resourceName": "blogaway7083f9c6",
           "attributes": [
             "Name",
             "Arn"

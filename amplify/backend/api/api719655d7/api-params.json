@@ -1,45 +1,73 @@
 {
-  "paths": [
-    {
-      "name": "/blogs",
-      "lambdaFunction": "blogaway83882c9a",
-      "privacy": {
-        "protected": true,
-        "auth": [
-          "/POST",
-          "/GET",
-          "/PUT",
-          "/PATCH",
-          "/DELETE"
-        ],
-        "unauth": [
-          "/GET"
-        ]
-      },
-      "policyResourceName": "/blogs"
-    }
-  ],
-  "resourceName": "api719655d7",
-  "apiName": "api719655d7",
-  "functionArns": [
-    {
-      "lambdaFunction": "blogaway83882c9a"
-    }
-  ],
-  "privacy": {
-    "auth": 1,
-    "unauth": 1,
-    "authRoleName": "amplify-blogaway-dev-161419-authRole",
-    "unAuthRoleName": "amplify-blogaway-dev-161419-unauthRole"
-  },
-  "dependsOn": [
-    {
-      "category": "function",
-      "resourceName": "blogaway83882c9a",
-      "attributes": [
-        "Name",
-        "Arn"
-      ]
-    }
-  ]
+    "paths": [
+        {
+            "name": "/blogs",
+            "lambdaFunction": "blogaway83882c9a",
+            "privacy": {
+                "protected": true,
+                "auth": [
+                    "/POST",
+                    "/GET",
+                    "/PUT",
+                    "/PATCH",
+                    "/DELETE"
+                ],
+                "unauth": [
+                    "/GET"
+                ]
+            },
+            "policyResourceName": "/blogs"
+        },
+        {
+            "name": "/blogs/user",
+            "lambdaFunction": "blogaway83882c9a",
+            "privacy": {
+                "open": true
+            },
+            "policyResourceName": "/blogs/user"
+        },
+        {
+            "name": "/comments",
+            "lambdaFunction": "blogaway7083f9c6",
+            "privacy": {
+                "open": true
+            },
+            "policyResourceName": "/comments"
+        }
+    ],
+    "resourceName": "api719655d7",
+    "apiName": "api719655d7",
+    "functionArns": [
+        {
+            "lambdaFunction": "blogaway83882c9a"
+        },
+        {
+            "lambdaFunction": "blogaway7083f9c6"
+        }
+    ],
+    "privacy": {
+        "auth": 1,
+        "unauth": 1,
+        "authRoleName": "amplify-blogaway-dev-161419-authRole",
+        "unAuthRoleName": "amplify-blogaway-dev-161419-unauthRole"
+    },
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "blogaway83882c9a",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        },
+        {
+            "category": "function",
+            "resourceName": "blogaway7083f9c6",
+            "attributes": [
+                "Name",
+                "Arn"
+            ]
+        }
+    ],
+    "uuid": "c9a2cd67"
 }

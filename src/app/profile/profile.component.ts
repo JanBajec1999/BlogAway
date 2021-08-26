@@ -30,7 +30,7 @@ export class ProfileComponent implements OnInit {
   }
 
   delete(blog: Blog){
-    this.blogsService.deleteBlog(blog.PK,blog.SK, blog.username, this.currentUser).then(result => {
+    this.blogsService.deleteBlog(blog.PK,blog.SK, this.currentUser).then(result => {
       if(result == 1) {
         this.blogs.splice(this.blogs.indexOf(blog), 1);
       }
