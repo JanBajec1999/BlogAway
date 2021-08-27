@@ -12,7 +12,6 @@ const AWS = require('aws-sdk')
 var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
 var bodyParser = require('body-parser')
 var express = require('express')
-var publicKeyJWT = "AL9Kz62JHMpn5kBEqyoaXkM56x3l3Wi0kg0Juv71QtXo5M4ZJYxouKdcrKfevYTRNm6DE0hTbJnyj7Bh4EYbmruGdSWE970xkcFJxcgak0j4rneRX5G1E/xN27M42OOLmZCe8O6l3nksD0XGOqBPqOSEP3pYCNAYMncpSGnit56fUX+yszfMjGP3DVSUFZKtXbqwt/S0VpBi5BQbbD57R8DKenQsPfln91tgGopmXP66vZ4yWRUzs/mqHxcez3FcgHHXc6AbEJ6GOSVd9t+BCUW5kVY0aYO301PJczvB3zfsI6qebjS6BFTvMp8SqK532ZRnXEMgs/5gc9cfxpDsgvk="
 
 AWS.config.update({ region: process.env.TABLE_REGION });
 
